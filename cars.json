@@ -1,0 +1,14 @@
+[
+    {
+        "id": 1,
+        "brand": "Honda",
+        "model": "Civic",
+        "year": 2024
+    },
+    {
+        "id": 2,
+        "brand": "Pagani",
+        "model": "Huayra",
+        "year": 2025
+    }
+]
