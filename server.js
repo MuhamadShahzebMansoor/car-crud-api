@@ -419,6 +419,16 @@ app.delete("/users/:username", authenticateToken, requireOwner, (req, res) => {
     });
 });
 
+// Global Error Handler
+app.use((err, req, res, next) => {
+
+    console.error(err);
+
+    res.status(500).json({
+        message: "Internal server error"
+    });
+});
+
 // Start server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
