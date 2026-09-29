@@ -2,7 +2,7 @@
 
 A REST API for managing car records using Node.js, Express, JavaScript, and JSON file storage.
 
-The API also includes JWT authentication, role-based authorization, customer registration, login, password hashing, and input validation.
+The API also includes JWT authentication, role-based authorization, customer registration, login, password hashing, input validation, and global error handling.
 
 ## Features
 
@@ -23,6 +23,7 @@ The API also includes JWT authentication, role-based authorization, customer reg
 * Password hashing using bcrypt
 * Owner-only user management
 * Environment variables using `.env`
+* Global error handling
 
 ## Technologies Used
 
@@ -185,6 +186,18 @@ Example:
         "Username cannot be empty",
         "Password must be at least 6 characters"
     ]
+}
+```
+
+## Error Handling
+
+The API uses a global error handler for unexpected server errors.
+
+If an unexpected error occurs, the API returns:
+
+```json
+{
+    "message": "Internal server error"
 }
 ```
 
