@@ -1,0 +1,397 @@
+/* =========================
+   General
+========================= */
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #e8edf5;
+    color: #26354a;
+}
+
+#app {
+    min-height: 100vh;
+}
+
+
+/* =========================
+   Login / Register
+========================= */
+
+.auth-box {
+    background-color: #ffffff;
+    width: 90%;
+    max-width: 430px;
+    margin: 70px auto;
+    padding: 35px;
+    box-sizing: border-box;
+    border-radius: 14px;
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(45, 62, 80, 0.15);
+    border-top: 5px solid #5277a8;
+}
+
+.auth-box h1 {
+    margin-bottom: 8px;
+    color: #344d6e;
+}
+
+.auth-box h2 {
+    margin-bottom: 25px;
+    color: #5277a8;
+}
+
+.auth-box p {
+    color: #66758a;
+}
+
+
+/* =========================
+   Inputs
+========================= */
+
+input {
+    display: block;
+    width: 100%;
+    max-width: 400px;
+    margin: 12px auto;
+    padding: 13px 14px;
+    box-sizing: border-box;
+
+    border: 1px solid #aebbd0;
+    border-radius: 7px;
+
+    background-color: #f8faff;
+    color: #26354a;
+
+    font-size: 15px;
+    outline: none;
+
+    transition: 0.2s;
+}
+
+input::placeholder {
+    color: #8491a3;
+}
+
+input:focus {
+    border-color: #5277a8;
+    box-shadow: 0 0 0 3px rgba(82, 119, 168, 0.15);
+}
+
+
+/* =========================
+   Buttons
+========================= */
+
+button {
+    padding: 11px 21px;
+    margin: 8px;
+    cursor: pointer;
+
+    border: none;
+    border-radius: 7px;
+
+    background-color: #5277a8;
+    color: white;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    transition: 0.2s;
+}
+
+button:hover {
+    background-color: #41658f;
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+
+/* =========================
+   Logout Button
+========================= */
+
+.logout-button {
+    background-color: #b85c5c;
+}
+
+.logout-button:hover {
+    background-color: #994949;
+}
+
+
+/* =========================
+   Link Buttons
+========================= */
+
+.link-button {
+    background: none;
+    color: #5277a8;
+    padding: 0;
+    margin: 0;
+    font-weight: normal;
+}
+
+.link-button:hover {
+    background: none;
+    color: #344d6e;
+    text-decoration: underline;
+    transform: none;
+}
+
+
+/* =========================
+   Pages
+========================= */
+
+.page {
+    width: 90%;
+    max-width: 900px;
+    margin: 45px auto;
+    text-align: center;
+}
+
+.page h1 {
+    margin-bottom: 8px;
+    color: #344d6e;
+}
+
+.page h2 {
+    color: #5277a8;
+}
+
+.page > p {
+    color: #66758a;
+}
+
+
+/* =========================
+   Sections
+========================= */
+
+.section {
+    background-color: #ffffff;
+    padding: 25px;
+    margin: 25px auto;
+
+    border-radius: 12px;
+    max-width: 800px;
+
+    box-shadow: 0 4px 16px rgba(45, 62, 80, 0.10);
+
+    border-left: 4px solid #718caf;
+}
+
+.section h2 {
+    margin-top: 0;
+    color: #344d6e;
+}
+
+
+/* =========================
+   Dashboard
+========================= */
+
+.dashboard-options {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 25px;
+    margin: 35px 0;
+
+    flex-wrap: wrap;
+}
+
+.dashboard-button {
+    width: 190px;
+    height: 115px;
+
+    font-size: 20px;
+    font-weight: bold;
+
+    background-color: #607fa6;
+
+    border-radius: 12px;
+
+    box-shadow: 0 5px 14px rgba(45, 62, 80, 0.18);
+}
+
+.dashboard-button:hover {
+    background-color: #4f6e94;
+    transform: translateY(-3px);
+}
+
+
+/* =========================
+   Cars List
+========================= */
+
+#ownerCarsList,
+#customerCarsList,
+#customersList {
+    margin-top: 20px;
+}
+
+
+/* =========================
+   Car Card
+========================= */
+
+.car {
+    background-color: #f5f7fb;
+
+    padding: 18px;
+    margin: 12px 0;
+
+    border-radius: 9px;
+
+    border: 1px solid #d1dae8;
+
+    text-align: left;
+
+    transition: 0.2s;
+}
+
+.car:hover {
+    background-color: #eef2f8;
+    box-shadow: 0 4px 12px rgba(45, 62, 80, 0.10);
+    transform: translateY(-2px);
+}
+
+.car h3 {
+    margin-top: 0;
+    margin-bottom: 9px;
+
+    color: #344d6e;
+}
+
+.car p {
+    margin: 6px 0;
+    color: #66758a;
+}
+
+
+/* =========================
+   Customer Card
+========================= */
+
+.customer {
+    background-color: #f5f7fb;
+
+    padding: 18px;
+    margin: 12px 0;
+
+    border-radius: 9px;
+
+    border: 1px solid #d1dae8;
+
+    text-align: left;
+
+    transition: 0.2s;
+}
+
+.customer:hover {
+    background-color: #eef2f8;
+    box-shadow: 0 4px 12px rgba(45, 62, 80, 0.10);
+    transform: translateY(-2px);
+}
+
+.customer h3 {
+    margin-top: 0;
+    color: #344d6e;
+}
+
+.customer p {
+    color: #66758a;
+}
+
+
+/* =========================
+   Back to Dashboard
+========================= */
+
+#backToDashboardFromCars,
+#backToDashboardFromCustomers {
+    background-color: #718caf;
+    margin-bottom: 20px;
+}
+
+#backToDashboardFromCars:hover,
+#backToDashboardFromCustomers:hover {
+    background-color: #5d7699;
+}
+
+
+/* =========================
+   Messages
+========================= */
+
+#loginMessage,
+#registerMessage,
+#addCarMessage,
+#updateCarMessage,
+#deleteCarMessage,
+#deleteCustomerMessage {
+    font-weight: bold;
+    margin-top: 12px;
+    min-height: 20px;
+}
+
+
+/* =========================
+   Forms
+========================= */
+
+.section form {
+    margin-top: 15px;
+}
+
+
+/* =========================
+   Hidden
+========================= */
+
+.hidden {
+    display: none;
+}
+
+
+/* =========================
+   Responsive Design
+========================= */
+
+@media (max-width: 600px) {
+
+    .auth-box {
+        margin: 40px auto;
+        padding: 25px;
+    }
+
+    .page {
+        width: 95%;
+        margin: 30px auto;
+    }
+
+    .section {
+        padding: 20px;
+    }
+
+    .dashboard-options {
+        flex-direction: column;
+    }
+
+    .dashboard-button {
+        width: 80%;
+        max-width: 260px;
+    }
+
+    button {
+        margin: 6px 3px;
+    }
+}
+
