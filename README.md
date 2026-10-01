@@ -1,109 +1,122 @@
 # Car CRUD API
 
-A full-stack Car Management System built with **Node.js, Express.js, PostgreSQL, and JavaScript**.
+A full-stack **Car Management System** built using **Node.js, Express, JavaScript, PostgreSQL (Supabase), JWT authentication, bcryptjs, and Vite**.
 
-The backend provides a RESTful API for managing cars and users. PostgreSQL is hosted on Supabase and connected using `pg`. JWT is used for authentication, bcrypt is used for password hashing, and the frontend provides a simple web interface for owners and customers.
+The system allows an owner to manage cars and customers, while customers can view available cars.
 
-## Technologies
+---
+
+## Technologies Used
+
+### Backend
 
 * Node.js
 * Express.js
 * JavaScript
 * PostgreSQL
 * Supabase
-* JWT (JSON Web Token)
-* bcryptjs
-* dotenv
-* pg (node-postgres)
-* Vite
+* `pg`
+* JWT (`jsonwebtoken`)
+* `bcryptjs`
+* `dotenv`
+* CORS
+
+### Frontend
+
+* JavaScript
 * HTML
 * CSS
+* Vite
+
+### API Testing
+
 * Postman
+
+---
 
 ## Features
 
+### Authentication
+
 * User registration
 * User login
-* Password hashing with bcrypt
-* JWT authentication
+* Password hashing using bcryptjs
+* JWT-based authentication
 * Bearer token authentication
-* Owner and customer roles
 * Role-based authorization
-* Create cars
-* Read cars
-* Update cars
-* Delete cars
-* View individual cars
-* Owner customer management
-* Input validation
-* PostgreSQL database
-* Global error handling
-* Frontend web interface
-
-## User Roles
 
 ### Owner
 
 The owner can:
 
 * View all cars
-* View an individual car
-* Create cars
+* View a specific car
+* Add cars
 * Update cars
 * Delete cars
 * View customers
-* Delete customer accounts
+* Delete customers
 
 ### Customer
 
 Customers can:
 
-* View available cars
-* View individual cars
+* View all available cars
+* View individual car information
 
 Customers cannot:
 
-* Create cars
+* Add cars
 * Update cars
 * Delete cars
-* Manage customers
+* View the customer list
+* Delete customers
+
+---
 
 ## Database
 
-The project uses **PostgreSQL hosted on Supabase**.
+The application uses **PostgreSQL hosted on Supabase**.
 
 ### Cars Table
 
-The `cars` table contains:
-
-* `id`
-* `brand`
-* `model`
-* `year`
+| Column | Type   | Description        |
+| ------ | ------ | ------------------ |
+| id     | bigint | Primary key        |
+| brand  | text   | Car brand          |
+| model  | text   | Car model          |
+| year   | bigint | Manufacturing year |
 
 ### Users Table
 
-The `users` table contains:
+| Column   | Type | Description     |
+| -------- | ---- | --------------- |
+| username | text | Primary key     |
+| password | text | Hashed password |
+| role     | text | User role       |
 
-* `username`
-* `password`
-* `role`
+The available roles are:
 
-Passwords are stored as bcrypt hashes.
+* `owner`
+* `customer`
+
+---
 
 ## Authentication
 
-The API uses **JWT authentication**.
+The API uses **JWT (JSON Web Token)** for authentication.
 
-After successful login, the server returns a JWT token.
+After successful login, the server returns a token.
 
-Protected requests send the token using the `Authorization` header:
+The token is sent with protected requests using the HTTP `Authorization` header:
 
 ```text
-Authorization: Bearer YOUR_TOKEN
+Authorization: Bearer <token>
 ```
 
 The backend verifies the token before allowing access to protected routes.
+
+---
 
 ## API Endpoints
 
@@ -111,67 +124,79 @@ The backend verifies the token before allowing access to protected routes.
 
 #### Register
 
-```text
+```http
 POST /register
 ```
 
-Example:
+Creates a new customer account.
+
+Example request:
 
 ```json
 {
-    "username": "testcustomer",
-    "password": "test123456"
+    "username": "ali",
+    "password": "123456"
 }
 ```
-
-Newly registered users are created as customers.
-
-#### Login
-
-```text
-POST /login
-```
-
-Example:
-
-```json
-{
-    "username": "shahzeb",
-    "password": "your-password"
-}
-```
-
-A successful login returns a JWT token and the user's role.
 
 ---
 
-## Cars
+#### Login
 
-### Get All Cars
+```http
+POST /login
+```
 
-```text
+Logs a user in and returns a JWT token.
+
+Example request:
+
+```json
+{
+    "username": "ali",
+    "password": "123456"
+}
+```
+
+---
+
+### Cars
+
+#### Get All Cars
+
+```http
 GET /cars
 ```
 
-Authentication required.
+Requires authentication.
 
-### Get One Car
+---
 
-```text
+#### Get One Car
+
+```http
 GET /cars/:id
 ```
 
-Authentication required.
+Requires authentication.
 
-### Create Car
+Example:
 
-```text
+```http
+GET /cars/1
+```
+
+---
+
+#### Add Car
+
+```http
 POST /cars
 ```
 
 Owner only.
 
-Example:
+Example request:
 
 ```json
 {
@@ -181,9 +206,11 @@ Example:
 }
 ```
 
-### Update Car
+---
 
-```text
+#### Update Car
+
+```http
 PUT /cars/:id
 ```
 
@@ -191,153 +218,107 @@ Owner only.
 
 Example:
 
+```http
+PUT /cars/1
+```
+
+Example request:
+
 ```json
 {
-    "brand": "BMW",
-    "model": "M5 Competition",
+    "brand": "Honda",
+    "model": "Civic",
     "year": 2025
 }
 ```
 
-### Delete Car
+---
 
-```text
+#### Delete Car
+
+```http
 DELETE /cars/:id
 ```
 
 Owner only.
 
+Example:
+
+```http
+DELETE /cars/1
+```
+
 ---
 
-## Users
+### Customers
 
-### Get Customers
+#### Get Customers
 
-```text
+```http
 GET /users
 ```
 
 Owner only.
 
-This endpoint returns only users with the `customer` role.
+This endpoint returns customers and does not include the owner.
 
-### Delete Customer
+---
 
-```text
+#### Delete Customer
+
+```http
 DELETE /users/:username
 ```
 
 Owner only.
 
-Owners cannot delete their own account or another owner account.
+Example:
 
-## Validation
+```http
+DELETE /users/ali
+```
 
-The API validates:
+The owner cannot delete their own account or another owner account.
 
-* Username
-* Password
-* Brand
-* Model
-* Car year
-* Car ID
+---
 
-Invalid requests return appropriate HTTP status codes and error messages.
+## Validation and Error Handling
 
-## Error Handling
+The backend includes validation and error handling for situations such as:
 
-The API includes global error handling for unexpected server errors.
+* Missing username
+* Missing password
+* Missing car brand
+* Missing car model
+* Missing car year
+* Invalid car ID
+* Car not found
+* Customer not found
+* Duplicate username
+* Invalid login credentials
+* Missing access token
+* Invalid access token
+* Insufficient permissions
+* Database errors
 
-Common status codes include:
-
-* `200` — Successful request
-* `201` — Resource created
-* `400` — Validation error
-* `401` — Authentication required
-* `403` — Access denied or invalid token
-* `404` — Resource not found
-* `500` — Internal server error
+---
 
 ## Environment Variables
 
-The backend uses environment variables for sensitive configuration.
+The backend uses a `.env` file for sensitive configuration.
 
-Create a `.env` file inside the `backend` folder:
+Example:
 
 ```env
-JWT_SECRET=your-jwt-secret
+JWT_SECRET=your-secret-key
 DATABASE_URL=your-postgresql-connection-string
 ```
 
-Never upload `.env` to GitHub.
+The `.env` file should **not** be uploaded to GitHub.
 
-## Running the Backend
+It is excluded using `.gitignore`.
 
-Open a terminal in the backend folder:
-
-```bash
-cd backend
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Start the server:
-
-```bash
-node server.js
-```
-
-The API runs at:
-
-```text
-http://localhost:3000
-```
-
-## Running the Frontend
-
-Open another terminal in the frontend folder:
-
-```bash
-cd frontend
-```
-
-Install frontend dependencies:
-
-```bash
-npm install
-```
-
-Start the frontend:
-
-```bash
-npm run dev
-```
-
-Vite will provide a local URL, usually:
-
-```text
-http://localhost:5173
-```
-
-## Testing
-
-Postman can be used to test the backend API.
-
-For protected endpoints:
-
-```text
-Authorization
-    ↓
-Bearer Token
-    ↓
-Paste JWT token
-```
-
-The frontend can also be used to test the main functionality of the system.
+---
 
 ## Project Structure
 
@@ -351,9 +332,7 @@ car-crud-api/
 │   ├── package.json
 │   ├── package-lock.json
 │   ├── server.js
-│   ├── db.js
-│   ├── cars.json
-│   └── users.json
+│   └── db.js
 │
 ├── frontend/
 │   ├── node_modules/
@@ -365,21 +344,107 @@ car-crud-api/
 │   ├── package.json
 │   └── package-lock.json
 │
-├── README.md
-└── .gitignore
+└── README.md
 ```
+
+> `node_modules/` and `.env` are local files and are ignored by Git. They are shown above only to explain the local project structure.
+
+---
+
+## How to Run the Backend
+
+Open a terminal and navigate to the backend folder:
+
+```powershell
+cd backend
+```
+
+Install dependencies:
+
+```powershell
+npm install
+```
+
+Start the server:
+
+```powershell
+node server.js
+```
+
+The backend will run on:
+
+```text
+http://localhost:3000
+```
+
+---
+
+## How to Run the Frontend
+
+Open another terminal and navigate to the frontend folder:
+
+```powershell
+cd frontend
+```
+
+Install dependencies:
+
+```powershell
+npm install
+```
+
+Start the Vite development server:
+
+```powershell
+npm run dev
+```
+
+Vite will provide a local URL, normally similar to:
+
+```text
+http://localhost:5173/
+```
+
+Open that URL in your browser.
+
+---
+
+## Using the Application
+
+1. Start the backend server.
+2. Start the frontend development server.
+3. Open the frontend URL in your browser.
+4. Register a customer account or log in.
+5. Owners can access the Owner Dashboard.
+6. Customers can access the Customer Page.
+7. Owners can manage cars and customers.
+8. Customers can view available cars.
+
+---
 
 ## Security
 
-* Passwords are hashed using bcrypt.
-* JWT tokens are used for authentication.
-* Protected routes require authentication.
-* Owner-only routes use role-based authorization.
-* Database credentials are stored in environment variables.
-* `.env` is excluded from GitHub using `.gitignore`.
+The application uses:
 
-## Database Hosting
+* JWT authentication
+* Bearer tokens
+* Password hashing with bcryptjs
+* Environment variables for sensitive configuration
+* Role-based authorization
+* Protected API routes
 
-The PostgreSQL database is hosted on **Supabase**.
+The PostgreSQL database is hosted using Supabase.
 
-The backend connects to PostgreSQL using the `pg` package.
+---
+
+## GitHub
+
+The project is stored in a GitHub repository:
+
+**MuhamadShahzebMansoor/car-crud-api**
+
+---
+
+## Author
+
+**Muhammad Shahzeb Mansoor**
