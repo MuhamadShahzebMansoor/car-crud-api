@@ -1,100 +1,71 @@
 # Car CRUD API
 
-A REST API for managing car records using Node.js, Express, JavaScript, and JSON file storage.
+A RESTful Car CRUD API built with Node.js and Express.js.
 
-The API also includes JWT authentication, role-based authorization, customer registration, login, password hashing, input validation, and global error handling.
+The API uses PostgreSQL through Supabase for data storage, JWT for authentication, bcrypt for password hashing, and Postman for API testing.
 
-## Features
-
-* Create a new car
-* Get all cars
-* Get a single car by ID
-* Update a car
-* Delete a car
-* JSON file storage
-* Input validation
-* Custom ID selection for available IDs
-* Customer registration
-* User login
-* JWT authentication
-* Bearer token authentication
-* Owner and customer roles
-* Role-based authorization
-* Password hashing using bcrypt
-* Owner-only user management
-* Environment variables using `.env`
-* Global error handling
-
-## Technologies Used
+## Technologies
 
 * Node.js
 * Express.js
-* JavaScript
-* JSON
-* JWT
+* PostgreSQL
+* Supabase
+* JWT (JSON Web Token)
 * bcrypt
 * dotenv
+* pg (node-postgres)
 * Postman
 
-## Project Files
+## Features
 
-* `server.js` — Main API server
-* `cars.json` — Stores car data
-* `users.json` — Stores user data
-* `.env` — Stores the JWT secret
-* `.gitignore` — Prevents `.env` and other private files from being uploaded to GitHub
+* User registration
+* User login
+* Password hashing with bcrypt
+* JWT authentication
+* Owner and customer roles
+* Role-based authorization
+* Create cars
+* Read cars
+* Update cars
+* Delete cars
+* Input validation
+* PostgreSQL database
+* Global error handling
 
-## API Endpoints
+## Database
 
-### Authentication
+The project uses PostgreSQL hosted on Supabase.
 
-| Method | Endpoint    | Description                   |
-| ------ | ----------- | ----------------------------- |
-| POST   | `/register` | Register a new customer       |
-| POST   | `/login`    | Login and receive a JWT token |
+### Cars Table
 
-### Cars
+The `cars` table contains:
 
-| Method | Endpoint    | Description   |
-| ------ | ----------- | ------------- |
-| GET    | `/cars`     | Get all cars  |
-| GET    | `/cars/:id` | Get one car   |
-| POST   | `/cars`     | Add a new car |
-| PUT    | `/cars/:id` | Update a car  |
-| DELETE | `/cars/:id` | Delete a car  |
+* `id`
+* `brand`
+* `model`
+* `year`
 
-### Users
+### Users Table
 
-| Method | Endpoint           | Description       |
-| ------ | ------------------ | ----------------- |
-| GET    | `/users`           | Get all users     |
-| DELETE | `/users/:username` | Delete a customer |
+The `users` table contains:
+
+* `username`
+* `password`
+* `role`
+
+Passwords are stored as bcrypt hashes.
 
 ## Authentication
 
-The API uses **JWT (JSON Web Token)** for authentication.
+The API uses JWT authentication.
 
-After a successful login, the API returns a token.
+After logging in, the server returns a JWT token.
 
-Example:
-
-```json
-{
-    "message": "Login successful",
-    "role": "owner",
-    "token": "your-jwt-token"
-}
-```
-
-For protected endpoints, send the token using the HTTP `Authorization` header:
+Protected requests use the token in the Authorization header:
 
 ```text
-Authorization: Bearer your-jwt-token
+Authorization: Bearer YOUR_TOKEN
 ```
-
-In Postman, this can be set using:
-
-**Authorization → Type: Bearer Token → Token**
 
 ## User Roles
 
@@ -103,7 +74,7 @@ In Postman, this can be set using:
 The owner can:
 
 * View cars
-* Add cars
+* Create cars
 * Update cars
 * Delete cars
 * View users
@@ -114,105 +85,177 @@ The owner can:
 Customers can:
 
 * View cars
+* View individual cars
 
 Customers cannot:
 
-* Add cars
+* Create cars
 * Update cars
 * Delete cars
-* View all users
-* Delete users
+* Manage users
 
-## Registration
+## API Endpoints
 
-Customers can register using:
+### Authentication
 
-```http
+#### Register
+
+```text
 POST /register
 ```
-
-Example request:
-
-```json
-{
-    "username": "ali",
-    "password": "ali12345"
-}
-```
-
-The password is securely hashed using bcrypt before being stored.
-
-## Login
-
-Users can log in using:
-
-```http
-POST /login
-```
-
-Example request:
-
-```json
-{
-    "username": "ali",
-    "password": "ali12345"
-}
-```
-
-A successful login returns a JWT token.
-
-## Validation
-
-The API validates user and car data.
-
-Examples:
-
-* Username cannot be empty
-* Password must be at least 6 characters
-* Brand cannot be empty
-* Model cannot be empty
-* Year must be a valid car year
-* Duplicate car IDs are rejected
-* Invalid IDs are rejected
-
-Multiple validation errors can be returned together.
 
 Example:
 
 ```json
 {
-    "message": "Validation failed",
-    "errors": [
-        "Username cannot be empty",
-        "Password must be at least 6 characters"
-    ]
+    "username": "testcustomer",
+    "password": "test123456"
 }
 ```
 
-## Error Handling
+#### Login
 
-The API uses a global error handler for unexpected server errors.
+```text
+POST /login
+```
 
-If an unexpected error occurs, the API returns:
+Example:
 
 ```json
 {
-    "message": "Internal server error"
+    "username": "shahzeb",
+    "password": "your-password"
 }
 ```
 
-## How to Run
+The response contains a JWT token.
 
-Install the dependencies:
+## Cars
+
+### Get All Cars
+
+```text
+GET /cars
+```
+
+Authentication required.
+
+### Get One Car
+
+```text
+GET /cars/:id
+```
+
+Authentication required.
+
+### Create Car
+
+```text
+POST /cars
+```
+
+Owner only.
+
+Example:
+
+```json
+{
+    "brand": "BMW",
+    "model": "M5",
+    "year": 2025
+}
+```
+
+### Update Car
+
+```text
+PUT /cars/:id
+```
+
+Owner only.
+
+Example:
+
+```json
+{
+    "brand": "BMW",
+    "model": "M5 Competition",
+    "year": 2025
+}
+```
+
+### Delete Car
+
+```text
+DELETE /cars/:id
+```
+
+Owner only.
+
+## Users
+
+### Get Users
+
+```text
+GET /users
+```
+
+Owner only.
+
+### Delete Customer
+
+```text
+DELETE /users/:username
+```
+
+Owner only.
+
+Owners cannot delete their own account or another owner account.
+
+## Validation
+
+The API validates:
+
+* Username
+* Password
+* Brand
+* Model
+* Car year
+* Car ID
+
+Invalid requests return appropriate HTTP status codes and error messages.
+
+## Error Handling
+
+The API includes a global error handler for unexpected server errors.
+
+Common status codes include:
+
+* `200` — Successful request
+* `201` — Resource created
+* `400` — Validation error
+* `401` — Authentication required
+* `403` — Access denied or invalid token
+* `404` — Resource not found
+* `500` — Internal server error
+
+## Environment Variables
+
+Create a `.env` file containing:
+
+```env
+JWT_SECRET=your-jwt-secret
+DATABASE_URL=your-postgresql-connection-string
+```
+
+Never upload `.env` to GitHub.
+
+## Running the Project
+
+Install dependencies:
 
 ```bash
 npm install
-```
-
-Create a `.env` file in the project folder:
-
-```env
-JWT_SECRET=my-secret-key
 ```
 
 Start the server:
@@ -221,37 +264,43 @@ Start the server:
 node server.js
 ```
 
-The server will run at:
+The API runs at:
 
 ```text
 http://localhost:3000
 ```
 
-## Example Car
-
-```json
-{
-    "id": 1,
-    "brand": "Honda",
-    "model": "Civic",
-    "year": 2024
-}
-```
-
 ## Testing
 
-The API can be tested using Postman.
+Postman can be used to test all API endpoints.
 
-For protected endpoints, first log in and copy the JWT token. Then use the token as a **Bearer Token** in Postman.
+For protected endpoints, select:
 
-The `cars.json` file is used to permanently store car data.
+```text
+Authorization
+→ Bearer Token
+→ Paste JWT token
+```
 
-The `users.json` file is used to permanently store user data.
+## Project Structure
+
+```text
+car-crud-api/
+│
+├── db.js
+├── server.js
+├── migrate-users.js
+├── package.json
+├── package-lock.json
+├── README.md
+├── .gitignore
+└── .env
+```
+
+The PostgreSQL database is hosted on Supabase.
 
 ## Security
 
-The JWT secret is stored in the `.env` file instead of directly in the source code.
-
-The `.env` file is included in `.gitignore` so the secret is not uploaded to GitHub.
-
-User passwords are stored as bcrypt hashes instead of plain-text passwords.
+* Passwords are hashed using bcrypt.
+* JWT tokens are used for authentication.
+* Role-
