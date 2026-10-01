@@ -1,19 +1,23 @@
 # Car CRUD API
 
-A RESTful Car CRUD API built with Node.js and Express.js.
+A full-stack Car Management System built with **Node.js, Express.js, PostgreSQL, and JavaScript**.
 
-The API uses PostgreSQL through Supabase for data storage, JWT for authentication, bcrypt for password hashing, and Postman for API testing.
+The backend provides a RESTful API for managing cars and users. PostgreSQL is hosted on Supabase and connected using `pg`. JWT is used for authentication, bcrypt is used for password hashing, and the frontend provides a simple web interface for owners and customers.
 
 ## Technologies
 
 * Node.js
 * Express.js
+* JavaScript
 * PostgreSQL
 * Supabase
 * JWT (JSON Web Token)
-* bcrypt
+* bcryptjs
 * dotenv
 * pg (node-postgres)
+* Vite
+* HTML
+* CSS
 * Postman
 
 ## Features
@@ -22,19 +26,51 @@ The API uses PostgreSQL through Supabase for data storage, JWT for authenticatio
 * User login
 * Password hashing with bcrypt
 * JWT authentication
+* Bearer token authentication
 * Owner and customer roles
 * Role-based authorization
 * Create cars
 * Read cars
 * Update cars
 * Delete cars
+* View individual cars
+* Owner customer management
 * Input validation
 * PostgreSQL database
 * Global error handling
+* Frontend web interface
+
+## User Roles
+
+### Owner
+
+The owner can:
+
+* View all cars
+* View an individual car
+* Create cars
+* Update cars
+* Delete cars
+* View customers
+* Delete customer accounts
+
+### Customer
+
+Customers can:
+
+* View available cars
+* View individual cars
+
+Customers cannot:
+
+* Create cars
+* Update cars
+* Delete cars
+* Manage customers
 
 ## Database
 
-The project uses PostgreSQL hosted on Supabase.
+The project uses **PostgreSQL hosted on Supabase**.
 
 ### Cars Table
 
@@ -57,42 +93,17 @@ Passwords are stored as bcrypt hashes.
 
 ## Authentication
 
-The API uses JWT authentication.
+The API uses **JWT authentication**.
 
-After logging in, the server returns a JWT token.
+After successful login, the server returns a JWT token.
 
-Protected requests use the token in the Authorization header:
+Protected requests send the token using the `Authorization` header:
 
 ```text
 Authorization: Bearer YOUR_TOKEN
 ```
 
-## User Roles
-
-### Owner
-
-The owner can:
-
-* View cars
-* Create cars
-* Update cars
-* Delete cars
-* View users
-* Delete customer accounts
-
-### Customer
-
-Customers can:
-
-* View cars
-* View individual cars
-
-Customers cannot:
-
-* Create cars
-* Update cars
-* Delete cars
-* Manage users
+The backend verifies the token before allowing access to protected routes.
 
 ## API Endpoints
 
@@ -113,6 +124,8 @@ Example:
 }
 ```
 
+Newly registered users are created as customers.
+
 #### Login
 
 ```text
@@ -128,7 +141,9 @@ Example:
 }
 ```
 
-The response contains a JWT token.
+A successful login returns a JWT token and the user's role.
+
+---
 
 ## Cars
 
@@ -192,15 +207,19 @@ DELETE /cars/:id
 
 Owner only.
 
+---
+
 ## Users
 
-### Get Users
+### Get Customers
 
 ```text
 GET /users
 ```
 
 Owner only.
+
+This endpoint returns only users with the `customer` role.
 
 ### Delete Customer
 
@@ -227,7 +246,7 @@ Invalid requests return appropriate HTTP status codes and error messages.
 
 ## Error Handling
 
-The API includes a global error handler for unexpected server errors.
+The API includes global error handling for unexpected server errors.
 
 Common status codes include:
 
@@ -241,7 +260,9 @@ Common status codes include:
 
 ## Environment Variables
 
-Create a `.env` file containing:
+The backend uses environment variables for sensitive configuration.
+
+Create a `.env` file inside the `backend` folder:
 
 ```env
 JWT_SECRET=your-jwt-secret
@@ -250,7 +271,13 @@ DATABASE_URL=your-postgresql-connection-string
 
 Never upload `.env` to GitHub.
 
-## Running the Project
+## Running the Backend
+
+Open a terminal in the backend folder:
+
+```bash
+cd backend
+```
 
 Install dependencies:
 
@@ -270,37 +297,89 @@ The API runs at:
 http://localhost:3000
 ```
 
+## Running the Frontend
+
+Open another terminal in the frontend folder:
+
+```bash
+cd frontend
+```
+
+Install frontend dependencies:
+
+```bash
+npm install
+```
+
+Start the frontend:
+
+```bash
+npm run dev
+```
+
+Vite will provide a local URL, usually:
+
+```text
+http://localhost:5173
+```
+
 ## Testing
 
-Postman can be used to test all API endpoints.
+Postman can be used to test the backend API.
 
-For protected endpoints, select:
+For protected endpoints:
 
 ```text
 Authorization
-→ Bearer Token
-→ Paste JWT token
+    ↓
+Bearer Token
+    ↓
+Paste JWT token
 ```
+
+The frontend can also be used to test the main functionality of the system.
 
 ## Project Structure
 
 ```text
 car-crud-api/
 │
-├── db.js
-├── server.js
-├── migrate-users.js
-├── package.json
-├── package-lock.json
+├── backend/
+│   ├── node_modules/
+│   ├── .env
+│   ├── .gitignore
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── server.js
+│   ├── db.js
+│   ├── cars.json
+│   └── users.json
+│
+├── frontend/
+│   ├── node_modules/
+│   ├── src/
+│   │   ├── main.js
+│   │   └── style.css
+│   ├── .gitignore
+│   ├── index.html
+│   ├── package.json
+│   └── package-lock.json
+│
 ├── README.md
-├── .gitignore
-└── .env
+└── .gitignore
 ```
-
-The PostgreSQL database is hosted on Supabase.
 
 ## Security
 
 * Passwords are hashed using bcrypt.
 * JWT tokens are used for authentication.
-* Role-
+* Protected routes require authentication.
+* Owner-only routes use role-based authorization.
+* Database credentials are stored in environment variables.
+* `.env` is excluded from GitHub using `.gitignore`.
+
+## Database Hosting
+
+The PostgreSQL database is hosted on **Supabase**.
+
+The backend connects to PostgreSQL using the `pg` package.
