@@ -1,397 +1,2044 @@
-/* =========================
-   General
-========================= */
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #123B63;
+    --primary-dark: #0A2945;
+    --primary-light: #E6F0F8;
+    --accent: #2F6FA5;
+
+    --success: #16794A;
+    --success-bg: #E6F5ED;
+
+    --danger: #B42318;
+    --danger-bg: #FCECEA;
+
+    --background: #EEF3F7;
+    --surface: #FFFFFF;
+    --surface-blue: #E7F0F7;
+    --surface-dark: #173E61;
+
+    --border: #CBD7E1;
+    --border-dark: #AEBECD;
+
+    --text: #17212B;
+    --text-secondary: #405364;
+    --text-muted: #617383;
+
+    --shadow-sm: 0 3px 10px rgba(18, 59, 99, 0.07);
+    --shadow: 0 9px 25px rgba(18, 59, 99, 0.10);
+    --shadow-lg: 0 18px 45px rgba(18, 59, 99, 0.14);
+
+    --radius-sm: 8px;
+    --radius: 12px;
+    --radius-lg: 18px;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
 
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #e8edf5;
-    color: #26354a;
-}
-
-#app {
     min-height: 100vh;
+
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    background: var(--background);
+    color: var(--text);
+
+    font-size: 17px;
+    line-height: 1.6;
+
+    -webkit-font-smoothing: antialiased;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible {
+    outline: 3px solid rgba(47, 111, 165, 0.28);
+    outline-offset: 2px;
+}
+
+svg {
+    width: 20px;
+    height: 20px;
+
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 
-/* =========================
-   Login / Register
-========================= */
+/* =========================================================
+   AUTH PAGE
+========================================================= */
+
+.auth-page {
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 40px 20px;
+
+    position: relative;
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            135deg,
+            #E7EFF5 0%,
+            #F7F9FB 50%,
+            #E2ECF4 100%
+        );
+}
+
+.auth-decoration {
+    position: absolute;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+}
+
+.auth-decoration-one {
+    width: 480px;
+    height: 480px;
+
+    top: -220px;
+    right: -180px;
+
+    background: rgba(18, 59, 99, 0.08);
+}
+
+.auth-decoration-two {
+    width: 360px;
+    height: 360px;
+
+    bottom: -180px;
+    left: -130px;
+
+    background: rgba(47, 111, 165, 0.08);
+}
 
 .auth-box {
-    background-color: #ffffff;
-    width: 90%;
-    max-width: 430px;
-    margin: 70px auto;
-    padding: 35px;
-    box-sizing: border-box;
-    border-radius: 14px;
-    text-align: center;
-    box-shadow: 0 6px 20px rgba(45, 62, 80, 0.15);
-    border-top: 5px solid #5277a8;
+    width: 100%;
+    max-width: 470px;
+
+    padding: 42px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 20px;
+
+    box-shadow: var(--shadow-lg);
+
+    position: relative;
+    z-index: 2;
+}
+
+.brand-mark {
+    width: 64px;
+    height: 64px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 24px;
+
+    background: var(--primary);
+    color: white;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 8px 20px rgba(18, 59, 99, 0.22);
+}
+
+.brand-mark svg {
+    width: 31px;
+    height: 31px;
+}
+
+.eyebrow {
+    color: var(--primary);
+
+    font-size: 0.85rem;
+    font-weight: 800;
+
+    letter-spacing: 0.12em;
+
+    margin-bottom: 10px;
 }
 
 .auth-box h1 {
-    margin-bottom: 8px;
-    color: #344d6e;
+    font-size: 2.2rem;
+    line-height: 1.2;
+
+    font-weight: 800;
+
+    color: var(--text);
+
+    margin-bottom: 12px;
 }
 
-.auth-box h2 {
-    margin-bottom: 25px;
-    color: #5277a8;
+.auth-subtitle {
+    color: var(--text-secondary);
+
+    font-size: 1.05rem;
+
+    margin-bottom: 30px;
+
+    line-height: 1.6;
 }
 
-.auth-box p {
-    color: #66758a;
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+.input-group {
+    margin-bottom: 22px;
 }
 
-
-/* =========================
-   Inputs
-========================= */
-
-input {
+.input-group label {
     display: block;
+
+    margin-bottom: 8px;
+
+    color: var(--text);
+
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.input-group input {
     width: 100%;
-    max-width: 400px;
-    margin: 12px auto;
-    padding: 13px 14px;
-    box-sizing: border-box;
 
-    border: 1px solid #aebbd0;
-    border-radius: 7px;
+    min-height: 52px;
 
-    background-color: #f8faff;
-    color: #26354a;
+    padding: 13px 15px;
 
-    font-size: 15px;
+    border: 1.5px solid var(--border-dark);
+
+    border-radius: 9px;
+
+    background: white;
+
+    color: var(--text);
+
+    font-size: 1rem;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.input-group input::placeholder {
+    color: #82909D;
+}
+
+.input-group input:focus {
+    border-color: var(--accent);
+
+    box-shadow:
+        0 0 0 4px rgba(47, 111, 165, 0.1);
+
     outline: none;
-
-    transition: 0.2s;
-}
-
-input::placeholder {
-    color: #8491a3;
-}
-
-input:focus {
-    border-color: #5277a8;
-    box-shadow: 0 0 0 3px rgba(82, 119, 168, 0.15);
 }
 
 
-/* =========================
-   Buttons
-========================= */
+/* =========================================================
+   BUTTONS
+========================================================= */
 
-button {
-    padding: 11px 21px;
-    margin: 8px;
-    cursor: pointer;
-
+.primary-button,
+.secondary-button,
+.danger-button,
+.logout-button,
+.back-button {
     border: none;
-    border-radius: 7px;
 
-    background-color: #5277a8;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    min-height: 48px;
+
+    padding: 12px 19px;
+
+    border-radius: 9px;
+
+    font-size: 1rem;
+    font-weight: 750;
+
+    transition:
+        transform 0.15s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.primary-button {
+    background: var(--primary);
     color: white;
 
-    font-size: 14px;
-    font-weight: bold;
-
-    transition: 0.2s;
+    box-shadow:
+        0 5px 14px rgba(18, 59, 99, 0.18);
 }
 
-button:hover {
-    background-color: #41658f;
+.primary-button:hover {
+    background: var(--primary-dark);
+
     transform: translateY(-1px);
+
+    box-shadow:
+        0 7px 18px rgba(18, 59, 99, 0.23);
 }
 
-button:active {
-    transform: translateY(0);
+.secondary-button {
+    background: var(--primary-light);
+
+    color: var(--primary);
+
+    border: 1px solid #C5D7E5;
 }
 
-
-/* =========================
-   Logout Button
-========================= */
-
-.logout-button {
-    background-color: #b85c5c;
+.secondary-button:hover {
+    background: #D7E7F2;
 }
 
-.logout-button:hover {
-    background-color: #994949;
+.danger-button {
+    background: var(--danger-bg);
+
+    color: var(--danger);
+
+    border: 1px solid #E9BCB7;
 }
 
+.danger-button:hover {
+    background: #F8DAD7;
+}
 
-/* =========================
-   Link Buttons
-========================= */
+.full-button {
+    width: 100%;
+
+    min-height: 54px;
+
+    font-size: 1.05rem;
+}
 
 .link-button {
-    background: none;
-    color: #5277a8;
+    border: none;
+
+    background: transparent;
+
+    color: var(--primary);
+
+    font-size: 1rem;
+    font-weight: 750;
+
     padding: 0;
-    margin: 0;
-    font-weight: normal;
+
+    text-decoration: underline;
 }
 
 .link-button:hover {
-    background: none;
-    color: #344d6e;
-    text-decoration: underline;
-    transform: none;
+    color: var(--primary-dark);
 }
 
+.auth-switch {
+    margin-top: 25px;
 
-/* =========================
-   Pages
-========================= */
+    padding-top: 22px;
 
-.page {
-    width: 90%;
-    max-width: 900px;
-    margin: 45px auto;
+    border-top: 1px solid var(--border);
+
     text-align: center;
+
+    color: var(--text-secondary);
+
+    font-size: 1rem;
 }
 
-.page h1 {
-    margin-bottom: 8px;
-    color: #344d6e;
+.form-message {
+    min-height: 25px;
+
+    margin-top: 12px;
+
+    font-size: 0.98rem;
+    font-weight: 650;
 }
 
-.page h2 {
-    color: #5277a8;
+.form-message.error {
+    color: var(--danger);
 }
 
-.page > p {
-    color: #66758a;
-}
-
-
-/* =========================
-   Sections
-========================= */
-
-.section {
-    background-color: #ffffff;
-    padding: 25px;
-    margin: 25px auto;
-
-    border-radius: 12px;
-    max-width: 800px;
-
-    box-shadow: 0 4px 16px rgba(45, 62, 80, 0.10);
-
-    border-left: 4px solid #718caf;
-}
-
-.section h2 {
-    margin-top: 0;
-    color: #344d6e;
+.form-message.success {
+    color: var(--success);
 }
 
 
-/* =========================
-   Dashboard
-========================= */
+/* =========================================================
+   TOP HEADER
+========================================================= */
 
-.dashboard-options {
+.top-header {
+    min-height: 76px;
+
     display: flex;
-    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 13px 5%;
+
+    background: var(--surface);
+
+    border-bottom: 1px solid var(--border);
+
+    position: sticky;
+    top: 0;
+
+    z-index: 50;
+
+    box-shadow: var(--shadow-sm);
+}
+
+.header-brand {
+    display: flex;
     align-items: center;
 
-    gap: 25px;
-    margin: 35px 0;
-
-    flex-wrap: wrap;
+    gap: 13px;
 }
 
-.dashboard-button {
-    width: 190px;
-    height: 115px;
+.header-logo {
+    width: 44px;
+    height: 44px;
 
-    font-size: 20px;
-    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    background-color: #607fa6;
+    background: var(--primary);
 
-    border-radius: 12px;
+    color: white;
 
-    box-shadow: 0 5px 14px rgba(45, 62, 80, 0.18);
+    border-radius: 10px;
 }
 
-.dashboard-button:hover {
-    background-color: #4f6e94;
-    transform: translateY(-3px);
+.header-logo svg {
+    width: 23px;
+    height: 23px;
+}
+
+.header-brand-name {
+    color: var(--text);
+
+    font-size: 1.12rem;
+    font-weight: 800;
+
+    line-height: 1.2;
+}
+
+.header-brand-subtitle {
+    color: var(--text-muted);
+
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.header-user {
+    display: flex;
+    align-items: center;
+
+    gap: 18px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+}
+
+.user-avatar {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--primary-light);
+
+    color: var(--primary);
+
+    border: 1px solid #C8D9E7;
+
+    border-radius: 50%;
+
+    font-size: 1.05rem;
+    font-weight: 800;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 85px;
+}
+
+.user-details strong {
+    color: var(--text);
+
+    font-size: 0.98rem;
+    font-weight: 750;
+
+    line-height: 1.3;
+}
+
+.user-details span {
+    color: var(--text-muted);
+
+    font-size: 0.86rem;
+    font-weight: 600;
+}
+
+.logout-button {
+    min-height: 43px;
+
+    padding: 9px 15px;
+
+    background: white;
+
+    color: var(--danger);
+
+    border: 1px solid #E5B8B4;
+}
+
+.logout-button:hover {
+    background: var(--danger-bg);
 }
 
 
-/* =========================
-   Cars List
-========================= */
+/* =========================================================
+   PAGE HEADING
+========================================================= */
 
-#ownerCarsList,
-#customerCarsList,
-#customersList {
-    margin-top: 20px;
+.page-heading {
+    padding: 44px 5% 25px;
+
+    max-width: 1450px;
+
+    margin: 0 auto;
+}
+
+.page-eyebrow,
+.section-eyebrow {
+    display: block;
+
+    color: var(--primary);
+
+    font-size: 0.84rem;
+    font-weight: 800;
+
+    letter-spacing: 0.09em;
+
+    margin-bottom: 7px;
+}
+
+.page-heading h1 {
+    font-size: 2.45rem;
+    line-height: 1.2;
+
+    color: var(--text);
+
+    font-weight: 800;
+
+    margin-bottom: 8px;
+}
+
+.page-heading p {
+    color: var(--text-secondary);
+
+    font-size: 1.08rem;
 }
 
 
-/* =========================
-   Car Card
-========================= */
+/* =========================================================
+   DASHBOARD
+========================================================= */
 
-.car {
-    background-color: #f5f7fb;
+.dashboard-content,
+.content-page {
+    width: 90%;
+    max-width: 1450px;
 
-    padding: 18px;
-    margin: 12px 0;
+    margin: 0 auto;
 
-    border-radius: 9px;
-
-    border: 1px solid #d1dae8;
-
-    text-align: left;
-
-    transition: 0.2s;
+    padding-bottom: 60px;
 }
 
-.car:hover {
-    background-color: #eef2f8;
-    box-shadow: 0 4px 12px rgba(45, 62, 80, 0.10);
-    transform: translateY(-2px);
+.welcome-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 30px 32px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #123B63,
+            #1D527F
+        );
+
+    color: white;
+
+    border-radius: var(--radius-lg);
+
+    box-shadow:
+        0 12px 30px rgba(18, 59, 99, 0.18);
+
+    margin-bottom: 26px;
 }
 
-.car h3 {
-    margin-top: 0;
-    margin-bottom: 9px;
+.welcome-label {
+    display: block;
 
-    color: #344d6e;
+    color: #C9DDEC;
+
+    font-size: 0.92rem;
+    font-weight: 700;
+
+    margin-bottom: 5px;
 }
 
-.car p {
-    margin: 6px 0;
-    color: #66758a;
+.welcome-text h2 {
+    color: white;
+
+    font-size: 1.9rem;
+
+    font-weight: 800;
+
+    margin-bottom: 7px;
+}
+
+.welcome-text p {
+    color: #E1EBF3;
+
+    font-size: 1rem;
+
+    max-width: 650px;
+}
+
+.welcome-icon {
+    width: 74px;
+    height: 74px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255, 255, 255, 0.12);
+
+    border: 1px solid rgba(255, 255, 255, 0.18);
+
+    border-radius: 17px;
+
+    flex-shrink: 0;
+}
+
+.welcome-icon svg {
+    width: 35px;
+    height: 35px;
 }
 
 
-/* =========================
-   Customer Card
-========================= */
+/* =========================================================
+   STATS
+========================================================= */
 
-.customer {
-    background-color: #f5f7fb;
+.stats-grid {
+    display: grid;
 
-    padding: 18px;
-    margin: 12px 0;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
 
-    border-radius: 9px;
+    gap: 18px;
 
-    border: 1px solid #d1dae8;
-
-    text-align: left;
-
-    transition: 0.2s;
+    margin-bottom: 38px;
 }
 
-.customer:hover {
-    background-color: #eef2f8;
-    box-shadow: 0 4px 12px rgba(45, 62, 80, 0.10);
-    transform: translateY(-2px);
+.stat-card {
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 22px;
+
+    background: white;
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius);
+
+    box-shadow: var(--shadow-sm);
 }
 
-.customer h3 {
-    margin-top: 0;
-    color: #344d6e;
+.stat-icon {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    background: var(--primary-light);
+
+    color: var(--primary);
+
+    border-radius: 11px;
 }
 
-.customer p {
-    color: #66758a;
+.customer-stat {
+    background: #EDF5F0;
+    color: var(--success);
+}
+
+.security-stat {
+    background: #F2F0FA;
+    color: #59459B;
+}
+
+.stat-card span {
+    display: block;
+
+    color: var(--text-muted);
+
+    font-size: 0.9rem;
+    font-weight: 650;
+
+    margin-bottom: 3px;
+}
+
+.stat-card strong {
+    display: block;
+
+    color: var(--text);
+
+    font-size: 1.12rem;
+    font-weight: 800;
 }
 
 
-/* =========================
-   Back to Dashboard
-========================= */
+/* =========================================================
+   DASHBOARD SECTIONS
+========================================================= */
 
-#backToDashboardFromCars,
-#backToDashboardFromCustomers {
-    background-color: #718caf;
+.dashboard-section,
+.section {
+    margin-bottom: 30px;
+}
+
+.section-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 20px;
+
     margin-bottom: 20px;
 }
 
-#backToDashboardFromCars:hover,
-#backToDashboardFromCustomers:hover {
-    background-color: #5d7699;
+.section-heading.compact {
+    align-items: center;
+}
+
+.section-heading h2 {
+    color: var(--text);
+
+    font-size: 1.55rem;
+
+    font-weight: 800;
+
+    margin-bottom: 4px;
+}
+
+.section-heading p {
+    color: var(--text-secondary);
+
+    font-size: 1rem;
+}
+
+.dashboard-options {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 20px;
+}
+
+.dashboard-card {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 18px;
+
+    text-align: left;
+
+    padding: 24px;
+
+    background: white;
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius-lg);
+
+    color: var(--text);
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-3px);
+
+    border-color: #9CB4C7;
+
+    box-shadow: var(--shadow);
+}
+
+.dashboard-card-icon {
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    background: var(--primary-light);
+
+    color: var(--primary);
+
+    border-radius: 13px;
+}
+
+.dashboard-card-icon svg {
+    width: 27px;
+    height: 27px;
+}
+
+.dashboard-card-content {
+    flex: 1;
+}
+
+.dashboard-card-content span {
+    display: block;
+
+    color: var(--text-muted);
+
+    font-size: 0.88rem;
+    font-weight: 700;
+
+    margin-bottom: 3px;
+}
+
+.dashboard-card-content h3 {
+    color: var(--text);
+
+    font-size: 1.35rem;
+
+    font-weight: 800;
+
+    margin-bottom: 4px;
+}
+
+.dashboard-card-content p {
+    color: var(--text-secondary);
+
+    font-size: 0.98rem;
+
+    line-height: 1.5;
+}
+
+.card-arrow {
+    color: var(--primary);
+
+    flex-shrink: 0;
+}
+
+.card-arrow svg {
+    width: 24px;
+    height: 24px;
+}
+
+.customer-card .dashboard-card-icon {
+    background: #EDF5F0;
+    color: var(--success);
+}
+
+.customer-main-card {
+    max-width: 700px;
 }
 
 
-/* =========================
-   Messages
-========================= */
+/* =========================================================
+   CONTENT PAGE
+========================================================= */
 
-#loginMessage,
-#registerMessage,
-#addCarMessage,
-#updateCarMessage,
-#deleteCarMessage,
-#deleteCustomerMessage {
-    font-weight: bold;
-    margin-top: 12px;
-    min-height: 20px;
+.content-page {
+    position: relative;
+}
+
+.content-hero {
+    display: flex;
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 30px;
+
+    margin-bottom: 28px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #DCEAF4,
+            #EEF5F9
+        );
+
+    border: 1px solid #C1D2DF;
+
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow);
+
+    position: relative;
+    overflow: hidden;
+}
+
+.content-hero::after {
+    content: "";
+
+    position: absolute;
+
+    width: 180px;
+    height: 180px;
+
+    right: -55px;
+    top: -75px;
+
+    border-radius: 50%;
+
+    background: rgba(18, 59, 99, 0.07);
+}
+
+.customer-hero {
+    background:
+        linear-gradient(
+            135deg,
+            #E1F0E9,
+            #F0F7F3
+        );
+
+    border-color: #C2DCCD;
+}
+
+.content-hero-icon {
+    width: 64px;
+    height: 64px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    background: var(--primary);
+
+    color: white;
+
+    border-radius: 14px;
+
+    position: relative;
+    z-index: 2;
+
+    box-shadow:
+        0 7px 16px rgba(18, 59, 99, 0.16);
+}
+
+.customer-hero .content-hero-icon {
+    background: var(--success);
+}
+
+.content-hero-icon svg {
+    width: 30px;
+    height: 30px;
+}
+
+.content-hero > div:last-child {
+    position: relative;
+    z-index: 2;
+}
+
+.content-hero span {
+    display: block;
+
+    color: var(--primary);
+
+    font-size: 0.82rem;
+    font-weight: 800;
+
+    letter-spacing: 0.08em;
+
+    margin-bottom: 4px;
+}
+
+.customer-hero span {
+    color: var(--success);
+}
+
+.content-hero h2 {
+    color: var(--text);
+
+    font-size: 1.65rem;
+
+    font-weight: 800;
+
+    margin-bottom: 3px;
+}
+
+.content-hero p {
+    color: var(--text-secondary);
+
+    font-size: 1rem;
 }
 
 
-/* =========================
-   Forms
-========================= */
+/* =========================================================
+   BACK BUTTON
+========================================================= */
 
-.section form {
-    margin-top: 15px;
+.back-button {
+    background: transparent;
+
+    color: var(--primary);
+
+    padding: 8px 2px;
+
+    margin-bottom: 22px;
+
+    font-size: 1rem;
+}
+
+.back-button:hover {
+    color: var(--primary-dark);
 }
 
 
-/* =========================
-   Hidden
-========================= */
+/* =========================================================
+   MANAGEMENT PAGE SECTIONS
+========================================================= */
 
-.hidden {
-    display: none;
+/*
+   These sections create stronger visual separation
+   on the Owner Car Management page.
+*/
+
+.section {
+    padding: 26px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #F9FBFC,
+            #EAF1F6
+        );
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-sm);
+
+    position: relative;
+}
+
+.section.compact {
+    padding: 24px;
+}
+
+.section > .section-heading {
+    padding-bottom: 16px;
+
+    border-bottom: 1px solid #CBD7E1;
 }
 
 
-/* =========================
-   Responsive Design
-========================= */
+/* =========================================================
+   CAR GRID
+========================================================= */
 
-@media (max-width: 600px) {
+.car-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 18px;
+}
+
+
+/*
+   Main Available Cars / Owner Cars cards
+*/
+
+.car-card {
+    background:
+        linear-gradient(
+            145deg,
+            #FFFFFF 0%,
+            #EAF2F8 100%
+        );
+
+    border: 1px solid #C4D4E0;
+
+    border-radius: 15px;
+
+    padding: 22px;
+
+    box-shadow:
+        0 5px 14px rgba(18, 59, 99, 0.08);
+
+    position: relative;
+
+    overflow: hidden;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.car-card::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 4px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #123B63,
+            #4A82AE
+        );
+}
+
+.car-card:hover {
+    transform: translateY(-4px);
+
+    border-color: #9DB6C9;
+
+    box-shadow:
+        0 12px 26px rgba(18, 59, 99, 0.13);
+}
+
+.car-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+}
+
+.car-icon {
+    width: 50px;
+    height: 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--primary);
+
+    color: white;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 6px 14px rgba(18, 59, 99, 0.17);
+}
+
+.car-icon svg {
+    width: 25px;
+    height: 25px;
+}
+
+.car-id {
+    color: var(--primary);
+
+    background: #DCEAF4;
+
+    border: 1px solid #C2D5E4;
+
+    border-radius: 20px;
+
+    padding: 5px 11px;
+
+    font-size: 0.86rem;
+    font-weight: 800;
+}
+
+.car-label {
+    display: block;
+
+    color: var(--text-muted);
+
+    font-size: 0.82rem;
+    font-weight: 800;
+
+    letter-spacing: 0.07em;
+
+    margin-bottom: 4px;
+}
+
+.car-info h3 {
+    color: var(--primary-dark);
+
+    font-size: 1.45rem;
+
+    line-height: 1.3;
+
+    font-weight: 800;
+
+    margin-bottom: 19px;
+}
+
+.car-meta {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 9px;
+}
+
+.car-meta div {
+    padding: 12px;
+
+    background:
+        rgba(255, 255, 255, 0.75);
+
+    border: 1px solid #CFDCE6;
+
+    border-radius: 9px;
+}
+
+.car-meta span {
+    display: block;
+
+    color: var(--text-muted);
+
+    font-size: 0.79rem;
+    font-weight: 700;
+
+    margin-bottom: 2px;
+}
+
+.car-meta strong {
+    display: block;
+
+    color: var(--text);
+
+    font-size: 0.95rem;
+    font-weight: 800;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   FORM AREA
+========================================================= */
+
+.forms-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 20px;
+
+    margin-top: 25px;
+}
+
+.form-section {
+    background:
+        linear-gradient(
+            145deg,
+            #FFFFFF,
+            #EDF3F7
+        );
+
+    border: 1px solid #C6D4DE;
+
+    border-radius: var(--radius-lg);
+
+    padding: 27px;
+
+    box-shadow: var(--shadow-sm);
+}
+
+.form-section-header {
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    margin-bottom: 24px;
+
+    padding-bottom: 17px;
+
+    border-bottom: 1px solid #D2DDE5;
+}
+
+.form-icon {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+}
+
+.form-icon svg {
+    width: 23px;
+    height: 23px;
+}
+
+.add-icon {
+    background: #DFF2E8;
+    color: var(--success);
+}
+
+.edit-icon {
+    background: #DCEAF4;
+    color: var(--primary);
+}
+
+.delete-icon {
+    background: #FBE3E0;
+    color: var(--danger);
+}
+
+.form-section-header span {
+    display: block;
+
+    color: var(--text-muted);
+
+    font-size: 0.79rem;
+    font-weight: 800;
+
+    letter-spacing: 0.07em;
+}
+
+.form-section-header h2 {
+    color: var(--text);
+
+    font-size: 1.3rem;
+
+    font-weight: 800;
+}
+
+.danger-section {
+    border-top: 4px solid var(--danger);
+
+    background:
+        linear-gradient(
+            145deg,
+            #FFFFFF,
+            #FCF0EF
+        );
+}
+
+.customer-delete-section {
+    max-width: 750px;
+}
+
+
+/* =========================================================
+   CUSTOMER MANAGEMENT
+========================================================= */
+
+/*
+   Customer list gets a different visual treatment
+   so it doesn't look like a plain white page.
+*/
+
+.customers-list {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+.customers-list .customer-card {
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #FFFFFF,
+            #E9F3EE
+        );
+
+    border: 1px solid #C6D9CE;
+
+    border-left: 5px solid var(--success);
+
+    border-radius: 13px;
+
+    box-shadow:
+        0 5px 14px rgba(22, 121, 74, 0.07);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.customers-list .customer-card:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 10px 22px rgba(22, 121, 74, 0.11);
+}
+
+.customer-avatar {
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    background: var(--success);
+
+    color: white;
+
+    border-radius: 50%;
+
+    font-size: 1.1rem;
+    font-weight: 800;
+
+    box-shadow:
+        0 5px 12px rgba(22, 121, 74, 0.17);
+}
+
+.customer-info {
+    flex: 1;
+
+    min-width: 0;
+}
+
+.customer-info > span {
+    display: block;
+
+    color: var(--text-muted);
+
+    font-size: 0.77rem;
+    font-weight: 800;
+
+    letter-spacing: 0.06em;
+}
+
+.customer-info h3 {
+    color: var(--text);
+
+    font-size: 1.17rem;
+
+    font-weight: 800;
+
+    overflow-wrap: anywhere;
+
+    margin: 2px 0;
+}
+
+.customer-info p {
+    color: var(--text-secondary);
+
+    font-size: 0.94rem;
+}
+
+.customer-info strong {
+    color: var(--text);
+}
+
+.customer-status {
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+    color: var(--success);
+
+    font-size: 0.9rem;
+    font-weight: 750;
+}
+
+.status-dot {
+    width: 9px;
+    height: 9px;
+
+    background: var(--success);
+
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 0 3px rgba(22, 121, 74, 0.12);
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.loading-state {
+    min-height: 180px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    gap: 13px;
+
+    grid-column: 1 / -1;
+
+    color: var(--text-secondary);
+
+    font-size: 1rem;
+    font-weight: 650;
+}
+
+.spinner {
+    width: 36px;
+    height: 36px;
+
+    border: 4px solid #D6E1E9;
+
+    border-top-color: var(--primary);
+
+    border-radius: 50%;
+
+    animation:
+        spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.empty-state {
+    min-height: 230px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    gap: 7px;
+
+    grid-column: 1 / -1;
+
+    padding: 30px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #F9FBFC,
+            #E9F1F6
+        );
+
+    border: 1px dashed #AEBFCC;
+
+    border-radius: var(--radius);
+
+    text-align: center;
+}
+
+.empty-icon {
+    width: 57px;
+    height: 57px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 7px;
+
+    background: var(--primary);
+
+    color: white;
+
+    border-radius: 13px;
+
+    box-shadow:
+        0 7px 16px rgba(18, 59, 99, 0.15);
+}
+
+.empty-icon svg {
+    width: 28px;
+    height: 28px;
+}
+
+.empty-state h3 {
+    color: var(--text);
+
+    font-size: 1.2rem;
+
+    font-weight: 800;
+}
+
+.empty-state p {
+    color: var(--text-secondary);
+
+    font-size: 0.98rem;
+}
+
+.error-state {
+    color: var(--danger);
+
+    border-color: #E0AAA5;
+}
+
+
+/* =========================================================
+   EXTRA VISUAL SEPARATION FOR MANAGEMENT PAGES
+========================================================= */
+
+/*
+   The main content page gets a subtle dark-blue
+   background layer behind management content.
+*/
+
+.content-page > .section {
+    position: relative;
+}
+
+.content-page > .section::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 4px;
+
+    border-radius: 18px 18px 0 0;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--primary),
+            #5A89AD
+        );
+}
+
+.content-page > .section + .section {
+    margin-top: 22px;
+}
+
+
+/* =========================================================
+   RESPONSIVE - TABLET
+========================================================= */
+
+@media (max-width: 1050px) {
+
+    .car-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .stats-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .stats-grid .stat-card:last-child {
+        grid-column: 1 / -1;
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE - MOBILE
+========================================================= */
+
+@media (max-width: 760px) {
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-size: 16px;
+    }
+
+    .auth-page {
+        padding: 20px 14px;
+    }
 
     .auth-box {
-        margin: 40px auto;
-        padding: 25px;
+        padding: 30px 22px;
+
+        border-radius: 16px;
     }
 
-    .page {
-        width: 95%;
-        margin: 30px auto;
+    .auth-box h1 {
+        font-size: 1.9rem;
     }
 
-    .section {
-        padding: 20px;
+    .auth-subtitle {
+        font-size: 1rem;
+    }
+
+    .top-header {
+        padding: 12px 4%;
+
+        min-height: 68px;
+    }
+
+    .header-brand-subtitle {
+        display: none;
+    }
+
+    .header-brand-name {
+        font-size: 1rem;
+    }
+
+    .header-logo {
+        width: 40px;
+        height: 40px;
+    }
+
+    .user-details {
+        display: none;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+    }
+
+    .logout-button {
+        width: 42px;
+        height: 42px;
+
+        min-height: 42px;
+
+        padding: 8px;
+    }
+
+    .logout-button span {
+        display: none;
+    }
+
+    .page-heading {
+        padding:
+            30px 5% 20px;
+    }
+
+    .page-heading h1 {
+        font-size: 2rem;
+    }
+
+    .page-heading p {
+        font-size: 1rem;
+    }
+
+    .dashboard-content,
+    .content-page {
+        width: 92%;
+
+        padding-bottom: 40px;
+    }
+
+    .welcome-card {
+        padding: 23px;
+
+        align-items: flex-start;
+    }
+
+    .welcome-text h2 {
+        font-size: 1.55rem;
+    }
+
+    .welcome-text p {
+        font-size: 0.95rem;
+    }
+
+    .welcome-icon {
+        width: 55px;
+        height: 55px;
+    }
+
+    .welcome-icon svg {
+        width: 27px;
+        height: 27px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+
+        gap: 12px;
+    }
+
+    .stats-grid .stat-card:last-child {
+        grid-column: auto;
     }
 
     .dashboard-options {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-card {
+        padding: 20px;
+    }
+
+    .section-heading {
+        align-items: flex-start;
+
         flex-direction: column;
     }
 
-    .dashboard-button {
-        width: 80%;
-        max-width: 260px;
+    .section-heading.compact {
+        align-items: flex-start;
     }
 
-    button {
-        margin: 6px 3px;
+    /*
+       Management sections on mobile.
+    */
+
+    .section {
+        padding: 20px 17px;
     }
+
+    .content-hero {
+        padding: 22px;
+
+        align-items: flex-start;
+    }
+
+    .content-hero h2 {
+        font-size: 1.4rem;
+    }
+
+    .content-hero p {
+        font-size: 0.95rem;
+    }
+
+    .car-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .forms-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .customers-list {
+        grid-template-columns: 1fr;
+    }
+
+    .customers-list .customer-card {
+        align-items: flex-start;
+    }
+
+    .customer-status {
+        display: none;
+    }
+
+}
+
+
+/* =========================================================
+   VERY SMALL SCREENS
+========================================================= */
+
+@media (max-width: 430px) {
+
+    .auth-box {
+        padding: 26px 18px;
+    }
+
+    .auth-box h1 {
+        font-size: 1.7rem;
+    }
+
+    .brand-mark {
+        width: 58px;
+        height: 58px;
+    }
+
+    .page-heading h1 {
+        font-size: 1.75rem;
+    }
+
+    .welcome-card {
+        gap: 15px;
+    }
+
+    .welcome-icon {
+        display: none;
+    }
+
+    .dashboard-card {
+        gap: 13px;
+
+        padding: 18px;
+    }
+
+    .dashboard-card-icon {
+        width: 50px;
+        height: 50px;
+    }
+
+    .dashboard-card-content h3 {
+        font-size: 1.18rem;
+    }
+
+    .dashboard-card-content p {
+        font-size: 0.9rem;
+    }
+
+    .card-arrow {
+        display: none;
+    }
+
+    .form-section {
+        padding: 21px 18px;
+    }
+
+    .car-meta {
+        grid-template-columns: 1fr;
+    }
+
+    .car-info h3 {
+        font-size: 1.3rem;
+    }
+
+    .content-hero-icon {
+        width: 53px;
+        height: 53px;
+    }
+
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
+button,
+input,
+label,
+p,
+span,
+strong,
+h1,
+h2,
+h3 {
+    text-rendering: optimizeLegibility;
+}
+
+button:disabled {
+    opacity: 0.6;
+
+    cursor: not-allowed;
+
+    transform: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+
+        transition-duration: 0.01ms !important;
+    }
+
 }
 
