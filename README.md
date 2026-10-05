@@ -43,7 +43,11 @@ The system allows an owner to manage cars and customers, while customers can vie
 * Password hashing using bcryptjs
 * JWT-based authentication
 * Bearer token authentication
+* Access tokens
+* Refresh tokens
+* Automatic access-token refreshing
 * Role-based authorization
+* Automatic logout when the refresh token expires
 
 ### Owner
 
@@ -106,15 +110,63 @@ The available roles are:
 
 The API uses **JWT (JSON Web Token)** for authentication.
 
-After successful login, the server returns a token.
+After successful login, the server returns:
 
-The token is sent with protected requests using the HTTP `Authorization` header:
+* An **access token**
+* A **refresh token**
+
+### Access Token
+
+The access token is used to access protected API routes.
+
+The token is sent using the HTTP `Authorization` header:
 
 ```text
-Authorization: Bearer <token>
+Authorization: Bearer <access-token>
 ```
 
-The backend verifies the token before allowing access to protected routes.
+The backend verifies the access token before allowing access to protected routes.
+
+### Refresh Token
+
+The refresh token is used to obtain a new access token when the current access token expires.
+
+The frontend automatically detects an expired access token and sends the refresh token to the `/refresh-token` endpoint.
+
+The process works like this:
+
+```text
+Access token expires
+        ↓
+Frontend receives expired-token response
+        ↓
+Frontend sends refresh token
+        ↓
+POST /refresh-token
+        ↓
+Backend verifies refresh token
+        ↓
+New access token is generated
+        ↓
+Original request is retried
+        ↓
+User continues using the application
+```
+
+The user does not need to log in again when only the access token expires.
+
+### Token Expiration
+
+For the current demonstration setup:
+
+* Access token: **1 minute**
+* Refresh token: **5 minutes**
+
+After the access token expires, the refresh token can be used to obtain a new access token.
+
+After the refresh token expires, a new access token cannot be generated and the user is logged out. The user must log in again.
+
+> **Note:** These short expiration times are configured for demonstration/testing purposes. In a production application, longer expiration times would normally be used.
 
 ---
 
@@ -147,7 +199,7 @@ Example request:
 POST /login
 ```
 
-Logs a user in and returns a JWT token.
+Logs a user in and returns an access token and refresh token.
 
 Example request:
 
@@ -157,6 +209,38 @@ Example request:
     "password": "123456"
 }
 ```
+
+Example response:
+
+```json
+{
+    "message": "Login successful",
+    "username": "ali",
+    "role": "customer",
+    "accessToken": "<access-token>",
+    "refreshToken": "<refresh-token>"
+}
+```
+
+---
+
+#### Refresh Access Token
+
+```http
+POST /refresh-token
+```
+
+Generates a new access token using a valid refresh token.
+
+Example request:
+
+```json
+{
+    "refreshToken": "<refresh-token>"
+}
+```
+
+The refresh token is verified by the backend before generating a new access token.
 
 ---
 
@@ -169,6 +253,8 @@ GET /cars
 ```
 
 Requires authentication.
+
+Returns all available cars.
 
 ---
 
@@ -297,7 +383,8 @@ The backend includes validation and error handling for situations such as:
 * Duplicate username
 * Invalid login credentials
 * Missing access token
-* Invalid access token
+* Invalid or expired access token
+* Invalid or expired refresh token
 * Insufficient permissions
 * Database errors
 
@@ -311,6 +398,7 @@ Example:
 
 ```env
 JWT_SECRET=your-secret-key
+JWT_REFRESH_SECRET=your-refresh-secret-key
 DATABASE_URL=your-postgresql-connection-string
 ```
 
@@ -324,6 +412,7 @@ It is excluded using `.gitignore`.
 
 ```text
 car-crud-api/
+
 │
 ├── backend/
 │   ├── node_modules/
@@ -419,6 +508,8 @@ Open that URL in your browser.
 6. Customers can access the Customer Page.
 7. Owners can manage cars and customers.
 8. Customers can view available cars.
+9. When an access token expires, the frontend automatically refreshes it using the refresh token.
+10. When the refresh token expires, the user is logged out and must log in again.
 
 ---
 
@@ -427,11 +518,13 @@ Open that URL in your browser.
 The application uses:
 
 * JWT authentication
-* Bearer tokens
+* Access and refresh tokens
+* Bearer token authentication
 * Password hashing with bcryptjs
 * Environment variables for sensitive configuration
 * Role-based authorization
 * Protected API routes
+* Automatic access-token renewal
 
 The PostgreSQL database is hosted using Supabase.
 

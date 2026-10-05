@@ -14,21 +14,76 @@ app.use(express.json());
 const PORT = 3000;
 
 
-// =========================
-// Authentication Middleware
-// =========================
+//! =========================
+//! TOKEN SETTINGS
+//! =========================
 
+const ACCESS_TOKEN_EXPIRY = "30sec";
+const REFRESH_TOKEN_EXPIRY = "1m";
+
+
+//! =========================
+//! CREATE ACCESS TOKEN
+//! =========================
+
+//* Creates a short-lived access token used to access protected routes.
+function createAccessToken(user) {
+
+    return jwt.sign(
+        {
+            username: user.username,
+            role: user.role,
+            type: "access"
+        },
+        process.env.JWT_SECRET,
+        {
+            expiresIn: ACCESS_TOKEN_EXPIRY
+        }
+    );
+}
+
+
+//! =========================
+//! CREATE REFRESH TOKEN
+//! =========================
+
+//* Creates a long-lived refresh token used to generate a new access token.
+function createRefreshToken(user) {
+
+    return jwt.sign(
+        {
+            username: user.username,
+            role: user.role,
+            type: "refresh"
+        },
+        process.env.JWT_REFRESH_SECRET,
+        {
+            expiresIn: REFRESH_TOKEN_EXPIRY
+        }
+    );
+}
+
+
+//! =========================
+//! AUTHENTICATION MIDDLEWARE
+//! =========================
+
+//* Checks whether the request contains a valid access token.
 function authenticateToken(req, res, next) {
 
-    const authHeader = req.headers["authorization"];
+    const authHeader =
+        req.headers["authorization"];
 
     const token =
-        authHeader && authHeader.split(" ")[1];
+        authHeader &&
+        authHeader.split(" ")[1];
 
     if (!token) {
+
         return res.status(401).json({
             message: "Access token required"
         });
+
     }
 
     jwt.verify(
@@ -37,23 +92,35 @@ function authenticateToken(req, res, next) {
         (err, user) => {
 
             if (err) {
+
                 return res.status(403).json({
-                    message: "Invalid or expired token"
+                    message: "Invalid or expired access token"
                 });
+
+            }
+
+            if (user.type !== "access") {
+
+                return res.status(403).json({
+                    message: "Invalid access token"
+                });
+
             }
 
             req.user = user;
 
             next();
+
         }
     );
 }
 
 
-// =========================
-// Owner Middleware
-// =========================
+//! =========================
+//! OWNER MIDDLEWARE
+//! =========================
 
+//* Allows only users with the owner role to continue.
 function requireOwner(req, res, next) {
 
     if (req.user.role !== "owner") {
@@ -61,16 +128,18 @@ function requireOwner(req, res, next) {
         return res.status(403).json({
             message: "Access denied. Owner only."
         });
+
     }
 
     next();
 }
 
 
-// =========================
-// Home Route
-// =========================
+//! =========================
+//! HOME ROUTE
+//! =========================
 
+//* Basic route used to confirm that the API is running.
 app.get("/", (req, res) => {
 
     res.send("Car CRUD API is running!");
@@ -78,15 +147,19 @@ app.get("/", (req, res) => {
 });
 
 
-// =========================
-// Register Customer
-// =========================
+//! =========================
+//! REGISTER CUSTOMER
+//! =========================
 
+//* Creates a new customer account.
 app.post("/register", async (req, res, next) => {
 
     try {
 
-        const { username, password } = req.body;
+        const {
+            username,
+            password
+        } = req.body;
 
         const errors = [];
 
@@ -115,19 +188,24 @@ app.post("/register", async (req, res, next) => {
         }
 
 
-        const cleanUsername = username.trim();
+        const cleanUsername =
+            username.trim();
 
 
         if (cleanUsername === "") {
 
-            errors.push("Username cannot be empty");
+            errors.push(
+                "Username cannot be empty"
+            );
 
         }
 
 
         if (password.trim() === "") {
 
-            errors.push("Password cannot be empty");
+            errors.push(
+                "Password cannot be empty"
+            );
 
         }
 
@@ -151,12 +229,13 @@ app.post("/register", async (req, res, next) => {
         }
 
 
-        const existingUser = await pool.query(
-            `SELECT username
-             FROM users
-             WHERE username = $1`,
-            [cleanUsername]
-        );
+        const existingUser =
+            await pool.query(
+                `SELECT username
+                 FROM users
+                 WHERE username = $1`,
+                [cleanUsername]
+            );
 
 
         if (existingUser.rows.length > 0) {
@@ -186,11 +265,14 @@ app.post("/register", async (req, res, next) => {
 
         res.status(201).json({
 
-            message: "User registered successfully",
+            message:
+                "User registered successfully",
 
-            username: cleanUsername,
+            username:
+                cleanUsername,
 
-            role: "customer"
+            role:
+                "customer"
 
         });
 
@@ -204,35 +286,42 @@ app.post("/register", async (req, res, next) => {
 });
 
 
-// =========================
-// Login
-// =========================
+//! =========================
+//! LOGIN
+//! =========================
 
+//* Verifies the user's credentials and creates both tokens.
 app.post("/login", async (req, res, next) => {
 
     try {
 
-        const { username, password } = req.body;
+        const {
+            username,
+            password
+        } = req.body;
 
 
-        const result = await pool.query(
-            `SELECT username, password, role
-             FROM users
-             WHERE username = $1`,
-            [username]
-        );
+        const result =
+            await pool.query(
+                `SELECT username, password, role
+                 FROM users
+                 WHERE username = $1`,
+                [username]
+            );
 
 
         if (result.rows.length === 0) {
 
             return res.status(401).json({
-                message: "Invalid username or password"
+                message:
+                    "Invalid username or password"
             });
 
         }
 
 
-        const user = result.rows[0];
+        const user =
+            result.rows[0];
 
 
         const passwordMatch =
@@ -245,35 +334,36 @@ app.post("/login", async (req, res, next) => {
         if (!passwordMatch) {
 
             return res.status(401).json({
-                message: "Invalid username or password"
+                message:
+                    "Invalid username or password"
             });
 
         }
 
 
-        const token = jwt.sign(
+        const accessToken =
+            createAccessToken(user);
 
-            {
-                username: user.username,
-                role: user.role
-            },
-
-            process.env.JWT_SECRET,
-
-            {
-                expiresIn: "1h"
-            }
-
-        );
+        const refreshToken =
+            createRefreshToken(user);
 
 
         res.json({
 
-            message: "Login successful",
+            message:
+                "Login successful",
 
-            role: user.role,
+            username:
+                user.username,
 
-            token: token
+            role:
+                user.role,
+
+            accessToken:
+                accessToken,
+
+            refreshToken:
+                refreshToken
 
         });
 
@@ -287,10 +377,87 @@ app.post("/login", async (req, res, next) => {
 });
 
 
-// =========================
-// Create Car
-// =========================
+//! =========================
+//! REFRESH ACCESS TOKEN
+//! =========================
 
+//* Uses a valid refresh token to create a new access token.
+app.post(
+    "/refresh-token",
+    (req, res) => {
+
+        const {
+            refreshToken
+        } = req.body;
+
+
+        if (!refreshToken) {
+
+            return res.status(401).json({
+                message:
+                    "Refresh token required"
+            });
+
+        }
+
+
+        jwt.verify(
+            refreshToken,
+            process.env.JWT_REFRESH_SECRET,
+            (err, user) => {
+
+                if (err) {
+
+                    return res.status(403).json({
+                        message:
+                            "Invalid or expired refresh token"
+                    });
+
+                }
+
+
+                if (user.type !== "refresh") {
+
+                    return res.status(403).json({
+                        message:
+                            "Invalid refresh token"
+                    });
+
+                }
+
+
+                const newAccessToken =
+                    createAccessToken({
+                        username:
+                            user.username,
+
+                        role:
+                            user.role
+                    });
+
+
+                res.json({
+
+                    message:
+                        "New access token created",
+
+                    accessToken:
+                        newAccessToken
+
+                });
+
+            }
+        );
+
+    }
+);
+
+
+//! =========================
+//! CREATE CAR
+//! =========================
+
+//* Only authenticated owners can create new cars.
 app.post(
     "/cars",
     authenticateToken,
@@ -332,7 +499,8 @@ app.post(
 
             } else {
 
-                const year = Number(req.body.year);
+                const year =
+                    Number(req.body.year);
 
 
                 if (
@@ -353,21 +521,25 @@ app.post(
             if (errors.length > 0) {
 
                 return res.status(400).json({
-                    message: "Validation failed",
-                    errors: errors
+                    message:
+                        "Validation failed",
+                    errors:
+                        errors
                 });
 
             }
 
 
-            const year = Number(req.body.year);
+            const year =
+                Number(req.body.year);
 
             let newId;
 
 
             if (req.body.id !== undefined) {
 
-                newId = Number(req.body.id);
+                newId =
+                    Number(req.body.id);
 
 
                 if (
@@ -392,7 +564,9 @@ app.post(
                     );
 
 
-                if (existingCar.rows.length > 0) {
+                if (
+                    existingCar.rows.length > 0
+                ) {
 
                     return res.status(400).json({
                         message:
@@ -403,34 +577,38 @@ app.post(
 
             } else {
 
-                const result = await pool.query(
-                    `SELECT
-                     COALESCE(MAX(id), 0) + 1 AS next_id
-                     FROM cars`
-                );
+                const result =
+                    await pool.query(
+                        `SELECT
+                         COALESCE(MAX(id), 0) + 1 AS next_id
+                         FROM cars`
+                    );
 
 
                 newId =
-                    Number(result.rows[0].next_id);
+                    Number(
+                        result.rows[0].next_id
+                    );
 
             }
 
 
-            const result = await pool.query(
+            const result =
+                await pool.query(
 
-                `INSERT INTO cars
-                 (id, brand, model, year)
-                 VALUES ($1, $2, $3, $4)
-                 RETURNING id, brand, model, year`,
+                    `INSERT INTO cars
+                     (id, brand, model, year)
+                     VALUES ($1, $2, $3, $4)
+                     RETURNING id, brand, model, year`,
 
-                [
-                    newId,
-                    req.body.brand.trim(),
-                    req.body.model.trim(),
-                    year
-                ]
+                    [
+                        newId,
+                        req.body.brand.trim(),
+                        req.body.model.trim(),
+                        year
+                    ]
 
-            );
+                );
 
 
             res.status(201).json(
@@ -448,10 +626,11 @@ app.post(
 );
 
 
-// =========================
-// Get All Cars
-// =========================
+//! =========================
+//! GET ALL CARS
+//! =========================
 
+//* Returns all cars sorted by their ID.
 app.get(
     "/cars",
     authenticateToken,
@@ -459,16 +638,19 @@ app.get(
 
         try {
 
-            const result = await pool.query(
+            const result =
+                await pool.query(
 
-                `SELECT id, brand, model, year
-                 FROM cars
-                 ORDER BY id ASC`
+                    `SELECT id, brand, model, year
+                     FROM cars
+                     ORDER BY id ASC`
 
+                );
+
+
+            res.json(
+                result.rows
             );
-
-
-            res.json(result.rows);
 
 
         } catch (error) {
@@ -481,10 +663,11 @@ app.get(
 );
 
 
-// =========================
-// Get One Car
-// =========================
+//! =========================
+//! GET ONE CAR
+//! =========================
 
+//* Returns one car using the car ID.
 app.get(
     "/cars/:id",
     authenticateToken,
@@ -492,30 +675,37 @@ app.get(
 
         try {
 
-            const id = Number(req.params.id);
+            const id =
+                Number(req.params.id);
 
 
-            const result = await pool.query(
+            const result =
+                await pool.query(
 
-                `SELECT id, brand, model, year
-                 FROM cars
-                 WHERE id = $1`,
+                    `SELECT id, brand, model, year
+                     FROM cars
+                     WHERE id = $1`,
 
-                [id]
+                    [id]
 
-            );
+                );
 
 
-            if (result.rows.length === 0) {
+            if (
+                result.rows.length === 0
+            ) {
 
                 return res.status(404).json({
-                    message: "Car not found"
+                    message:
+                        "Car not found"
                 });
 
             }
 
 
-            res.json(result.rows[0]);
+            res.json(
+                result.rows[0]
+            );
 
 
         } catch (error) {
@@ -528,10 +718,11 @@ app.get(
 );
 
 
-// =========================
-// Update Car
-// =========================
+//! =========================
+//! UPDATE CAR
+//! =========================
 
+//* Only authenticated owners can update cars.
 app.put(
     "/cars/:id",
     authenticateToken,
@@ -540,7 +731,8 @@ app.put(
 
         try {
 
-            const id = Number(req.params.id);
+            const id =
+                Number(req.params.id);
 
 
             const existingCar =
@@ -552,10 +744,13 @@ app.put(
                 );
 
 
-            if (existingCar.rows.length === 0) {
+            if (
+                existingCar.rows.length === 0
+            ) {
 
                 return res.status(404).json({
-                    message: "Car not found"
+                    message:
+                        "Car not found"
                 });
 
             }
@@ -590,11 +785,14 @@ app.put(
 
             if (req.body.year === undefined) {
 
-                errors.push("Year is required");
+                errors.push(
+                    "Year is required"
+                );
 
             } else {
 
-                const year = Number(req.body.year);
+                const year =
+                    Number(req.body.year);
 
 
                 if (
@@ -615,36 +813,42 @@ app.put(
             if (errors.length > 0) {
 
                 return res.status(400).json({
-                    message: "Validation failed",
-                    errors: errors
+                    message:
+                        "Validation failed",
+                    errors:
+                        errors
                 });
 
             }
 
 
-            const year = Number(req.body.year);
+            const year =
+                Number(req.body.year);
 
 
-            const result = await pool.query(
+            const result =
+                await pool.query(
 
-                `UPDATE cars
-                 SET brand = $1,
-                     model = $2,
-                     year = $3
-                 WHERE id = $4
-                 RETURNING id, brand, model, year`,
+                    `UPDATE cars
+                     SET brand = $1,
+                         model = $2,
+                         year = $3
+                     WHERE id = $4
+                     RETURNING id, brand, model, year`,
 
-                [
-                    req.body.brand.trim(),
-                    req.body.model.trim(),
-                    year,
-                    id
-                ]
+                    [
+                        req.body.brand.trim(),
+                        req.body.model.trim(),
+                        year,
+                        id
+                    ]
 
+                );
+
+
+            res.json(
+                result.rows[0]
             );
-
-
-            res.json(result.rows[0]);
 
 
         } catch (error) {
@@ -657,10 +861,11 @@ app.put(
 );
 
 
-// =========================
-// Delete Car
-// =========================
+//! =========================
+//! DELETE CAR
+//! =========================
 
+//* Only authenticated owners can delete cars.
 app.delete(
     "/cars/:id",
     authenticateToken,
@@ -669,31 +874,37 @@ app.delete(
 
         try {
 
-            const id = Number(req.params.id);
+            const id =
+                Number(req.params.id);
 
 
-            const result = await pool.query(
+            const result =
+                await pool.query(
 
-                `DELETE FROM cars
-                 WHERE id = $1
-                 RETURNING id`,
+                    `DELETE FROM cars
+                     WHERE id = $1
+                     RETURNING id`,
 
-                [id]
+                    [id]
 
-            );
+                );
 
 
-            if (result.rows.length === 0) {
+            if (
+                result.rows.length === 0
+            ) {
 
                 return res.status(404).json({
-                    message: "Car not found"
+                    message:
+                        "Car not found"
                 });
 
             }
 
 
             res.json({
-                message: "Car deleted successfully"
+                message:
+                    "Car deleted successfully"
             });
 
 
@@ -707,10 +918,12 @@ app.delete(
 );
 
 
-// =========================
-// Get Customers
-// =========================
+//! =========================
+//! GET CUSTOMERS
+//! =========================
 
+//* Returns only customer accounts.
+//* Owner accounts are excluded from the response.
 app.get(
     "/users",
     authenticateToken,
@@ -719,22 +932,20 @@ app.get(
 
         try {
 
-            // IMPORTANT:
-            // Only users with role = customer
-            // will be returned.
-            // Owners will NOT appear here.
+            const result =
+                await pool.query(
 
-            const result = await pool.query(
+                    `SELECT username, role
+                     FROM users
+                     WHERE role = 'customer'
+                     ORDER BY username ASC`
 
-                `SELECT username, role
-                 FROM users
-                 WHERE role = 'customer'
-                 ORDER BY username ASC`
+                );
 
+
+            res.json(
+                result.rows
             );
-
-
-            res.json(result.rows);
 
 
         } catch (error) {
@@ -747,10 +958,11 @@ app.get(
 );
 
 
-// =========================
-// Delete Customer
-// =========================
+//! =========================
+//! DELETE CUSTOMER
+//! =========================
 
+//* Only the owner can delete customer accounts.
 app.delete(
     "/users/:username",
     authenticateToken,
@@ -759,10 +971,13 @@ app.delete(
 
         try {
 
-            const username = req.params.username;
+            const username =
+                req.params.username;
 
 
-            if (username === req.user.username) {
+            if (
+                username === req.user.username
+            ) {
 
                 return res.status(400).json({
                     message:
@@ -772,27 +987,33 @@ app.delete(
             }
 
 
-            const userResult = await pool.query(
+            const userResult =
+                await pool.query(
 
-                `SELECT username, role
-                 FROM users
-                 WHERE username = $1`,
+                    `SELECT username, role
+                     FROM users
+                     WHERE username = $1`,
 
-                [username]
+                    [username]
 
-            );
+                );
 
 
-            if (userResult.rows.length === 0) {
+            if (
+                userResult.rows.length === 0
+            ) {
 
                 return res.status(404).json({
-                    message: "Customer not found"
+                    message:
+                        "Customer not found"
                 });
 
             }
 
 
-            if (userResult.rows[0].role === "owner") {
+            if (
+                userResult.rows[0].role === "owner"
+            ) {
 
                 return res.status(403).json({
                     message:
@@ -828,30 +1049,37 @@ app.delete(
 );
 
 
-// =========================
-// Global Error Handler
-// =========================
+//! =========================
+//! GLOBAL ERROR HANDLER
+//! =========================
 
-app.use((err, req, res, next) => {
+//* Handles unexpected errors that occur anywhere in the API.
+app.use(
+    (err, req, res, next) => {
 
-    console.error(err);
+        console.error(err);
 
-    res.status(500).json({
-        message: "Internal server error"
-    });
+        res.status(500).json({
+            message:
+                "Internal server error"
+        });
 
-});
+    }
+);
 
 
-// =========================
-// Start Server
-// =========================
+//! =========================
+//! START SERVER
+//! =========================
 
-app.listen(PORT, () => {
+//* Starts the Express server on port 3000.
+app.listen(
+    PORT,
+    () => {
 
-    console.log(
-        `Server is running on http://localhost:${PORT}`
-    );
+        console.log(
+            `Server is running on http://localhost:${PORT}`
+        );
 
-});
-
+    }
+);

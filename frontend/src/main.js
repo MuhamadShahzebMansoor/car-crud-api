@@ -23,6 +23,14 @@ let currentOwnerCars = [];
 
 let carsMenuListenerAttached = false;
 
+/*
+=========================================================
+   TOKEN REFRESH STATE
+=========================================================
+*/
+
+let refreshTokenRequest = null;
+
 /* =========================================================
    SAFE VALUE HELPERS
 ========================================================= */
@@ -70,6 +78,10 @@ function getToken() {
     return localStorage.getItem("token");
 }
 
+function getRefreshToken() {
+    return localStorage.getItem("refreshToken");
+}
+
 function getUsername() {
     return localStorage.getItem("username");
 }
@@ -114,10 +126,18 @@ function getUsernameFromToken(token) {
 ========================================================= */
 
 function saveLoginData(data) {
-    const token = data?.token;
+    const token = data?.accessToken;
+    const refreshToken = data?.refreshToken;
 
     if (token) {
         localStorage.setItem("token", token);
+    }
+
+    if (refreshToken) {
+        localStorage.setItem(
+            "refreshToken",
+            refreshToken
+        );
     }
 
     let username = data?.username;
@@ -138,13 +158,93 @@ function saveLoginData(data) {
 }
 
 /* =========================================================
+   REFRESH ACCESS TOKEN
+========================================================= */
+
+async function refreshAccessToken() {
+    const refreshToken = getRefreshToken();
+
+    if (!refreshToken) {
+        return false;
+    }
+
+    if (refreshTokenRequest) {
+        return refreshTokenRequest;
+    }
+
+    refreshTokenRequest = (async () => {
+        try {
+            const response = await fetch(
+                `${API_URL}/refresh-token`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        refreshToken
+                    })
+                }
+            );
+
+            let data = {};
+
+            try {
+                data = await response.json();
+            } catch {
+                data = {};
+            }
+
+            if (!response.ok) {
+                console.error(
+                    "Refresh token failed:",
+                    data?.message
+                );
+
+                return false;
+            }
+
+            if (!data?.accessToken) {
+                console.error(
+                    "Refresh response did not contain a new access token."
+                );
+
+                return false;
+            }
+
+            localStorage.setItem(
+                "token",
+                data.accessToken
+            );
+
+            return true;
+
+        } catch (error) {
+            console.error(
+                "Unable to refresh access token."
+            );
+
+            return false;
+
+        } finally {
+            refreshTokenRequest = null;
+        }
+    })();
+
+    return refreshTokenRequest;
+}
+
+/* =========================================================
    LOGOUT
 ========================================================= */
 
 function logout() {
     localStorage.removeItem("token");
+    localStorage.removeItem("refreshToken");
     localStorage.removeItem("username");
     localStorage.removeItem("role");
+
+    refreshTokenRequest = null;
 
     updateCarSelectionMode = false;
     currentOwnerCars = [];
@@ -158,7 +258,11 @@ function logout() {
    API REQUEST
 ========================================================= */
 
-async function apiRequest(url, options = {}) {
+async function apiRequest(
+    url,
+    options = {},
+    retryAfterRefresh = true
+) {
     const token = getToken();
 
     const headers = {
@@ -187,8 +291,37 @@ async function apiRequest(url, options = {}) {
             data = null;
         }
 
-        if (response.status === 401) {
+        /*
+        =====================================================
+        ACCESS TOKEN EXPIRED
+        =====================================================
+        */
+
+        const isExpiredAccessToken =
+            response.status === 401 ||
+            (
+                response.status === 403 &&
+                data?.message ===
+                    "Invalid or expired access token"
+            );
+
+        if (
+            isExpiredAccessToken &&
+            retryAfterRefresh
+        ) {
+            const refreshed =
+                await refreshAccessToken();
+
+            if (refreshed) {
+                return apiRequest(
+                    url,
+                    options,
+                    false
+                );
+            }
+
             logout();
+
             return null;
         }
 
@@ -197,12 +330,14 @@ async function apiRequest(url, options = {}) {
             status: response.status,
             data: data ?? {}
         };
+
     } catch (error) {
         return {
             ok: false,
             status: 0,
             data: {
-                message: "Unable to connect to the server."
+                message:
+                    "Unable to connect to the server."
             }
         };
     }
